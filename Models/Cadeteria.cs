@@ -23,7 +23,7 @@ public class Cadeteria
 
     }
 
-    public void cambiarEstadoPedido(Pedidos pedidos)
+    private void cambiarEstadoPedido(Pedidos pedidos)
     {
         pedidos.Estado = false;
         pedidos.cadete.PedidosRealizados += 1;
