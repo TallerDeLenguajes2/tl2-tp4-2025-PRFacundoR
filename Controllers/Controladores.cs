@@ -8,7 +8,7 @@ public class CadeteriaController : ControllerBase
 {
 
 
-    private  Cadeteria _cadeteria = new Cadeteria
+    private static Cadeteria _cadeteria = new Cadeteria
     {
         Cadetes1 = new List<Cadetes>(),
         Pedidos = new List<Pedidos>()
@@ -138,8 +138,8 @@ public class CadeteriaController : ControllerBase
 
 
 
-    [HttpPut("estado/{idPedido}/{nuevoEstado}")]
-    public IActionResult CambiarEstadoPedido(int idPedido)
+    [HttpPut("estado/{idPedido}")]
+    public IActionResult BorrarPedido(int idPedido)
     {
 
         _cadeteria.BorrarPedido(idPedido);
