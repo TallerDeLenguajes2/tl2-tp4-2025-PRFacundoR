@@ -8,7 +8,7 @@ public class CadeteriaController : ControllerBase
 {
 
 
-    private static Cadeteria _cadeteria = new Cadeteria
+    private Cadeteria _cadeteria = new Cadeteria
     {
         Cadetes1 = new List<Cadetes>(),
         Pedidos = new List<Pedidos>()
@@ -21,18 +21,11 @@ public class CadeteriaController : ControllerBase
     [HttpPost("cadeteria")]
     public ActionResult<Cadeteria> CrearCadeteria([FromQuery] string path)
     {
-        IAccesoADatos acceso;
+       
 
-        string[] tipoPath = path.Split('.');
-
-        if (tipoPath[1] == "csv")
-        {
-            acceso = new AccesoADatosCSV();
-        } else
-        {
-            acceso = new AccesoADatosJSON();
+        AccesoADatosCadeteria acceso = new AccesoADatosCadeteria();
             
-        }
+        
 
         _cadeteria = acceso.LeerCadeteria(path);
 
@@ -50,19 +43,15 @@ public class CadeteriaController : ControllerBase
     [HttpPost("cadetes")]
     public ActionResult<List<Cadetes>> CrearCades([FromQuery] string path)
     {
-        IAccesoADatos acceso;
+        
 
-        string[] tipoPath = path.Split('.');
+    
 
-        if (tipoPath[1] == "csv")
-        {
-            acceso = new AccesoADatosCSV();
-        } else
-        {
-            acceso = new AccesoADatosJSON();
+      
+        
+           AccesoADatosCadetes acceso = new AccesoADatosCadetes();
             
-        }
-
+       
         _cadeteria.Cadetes1 = acceso.LeerCadetedes(path);
 
         return Ok(_cadeteria.Cadetes1);
