@@ -8,7 +8,7 @@ public class CadeteriaController : ControllerBase
 {
 
 
-    private static Cadeteria _cadeteria = new Cadeteria
+    private  Cadeteria _cadeteria = new Cadeteria
     {
         Cadetes1 = new List<Cadetes>(),
         Pedidos = new List<Pedidos>()

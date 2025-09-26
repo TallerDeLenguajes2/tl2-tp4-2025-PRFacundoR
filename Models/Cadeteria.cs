@@ -54,19 +54,32 @@ public class Cadeteria
     }
 
 
-    
+
 
     public void CrearInforme(string NombreArchivo, List<Pedidos> pedidos)
     {
-        string json = JsonSerializer.Serialize(pedidos);
-        File.WriteAllText(NombreArchivo, json);
+        if (File.Exists(NombreArchivo))
+        {
+            string json1 = File.ReadAllText(NombreArchivo);
+            List<Pedidos> pedidoR = JsonSerializer.Deserialize<List<Pedidos>>(json1);
 
+            foreach (Pedidos p in pedidoR)
+            {
+
+                pedidos.Add(p);
+            }
+        }
+        else
+        {
+            string json = JsonSerializer.Serialize(pedidos);
+            File.WriteAllText(NombreArchivo, json);
+        }
     }
 
 
     public double jornalAcobrar(int idcadete)
     {
-        
+
         Cadetes cadetes1 = cadetes.FirstOrDefault(c => c.Id == idcadete);
         double pagaDeCadete = cadetes1.PedidosRealizados * 500;
         return pagaDeCadete;
@@ -80,8 +93,8 @@ public class Cadeteria
         pedido.cadete = cadete;
 
     }
-    
 
-    
+
+
 
 }
