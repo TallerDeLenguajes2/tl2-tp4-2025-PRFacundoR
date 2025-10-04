@@ -86,12 +86,13 @@ public class Cadeteria
     }
 
 
-    public void AsignarCadeteAPedido(int idcadete, int idpedido)
+    public Pedidos AsignarCadeteAPedido(int idcadete, int idpedido)
     {
+
         var cadete = cadetes.FirstOrDefault(c => c.Id == idcadete);
         var pedido = pedidos.FirstOrDefault(p => p.Nro == idpedido);
         pedido.cadete = cadete;
-
+        return pedido;
     }
 
 

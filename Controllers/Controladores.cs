@@ -7,7 +7,7 @@ namespace cadet.Controllers;
 public class CadeteriaController : ControllerBase
 {
 
-//asii se hace cuando no es estatico
+    //asii se hace cuando no es estatico
     private Cadeteria _cadeteria = new Cadeteria
     {
         Cadetes1 = new AccesoADatosCadetes().Obtener(),
@@ -18,7 +18,7 @@ public class CadeteriaController : ControllerBase
 
 
 
-    
+
 
 
 
@@ -49,12 +49,12 @@ public class CadeteriaController : ControllerBase
 
 
 
-    [HttpGet("informe")]
-    public ActionResult GetInforme(List<Pedidos> pedidoR)
-    {
-        _cadeteria.CrearInforme("pedidosR.json", pedidoR);
-        return Ok("Informe creado");
-    }
+    /* [HttpGet("informe")] muestra sin modificar nada
+     public ActionResult GetInforme(List<Pedidos> pedidoR)
+     {
+         _cadeteria.CrearInforme("pedidosR.json", pedidoR);
+         return Ok("Informe creado");
+     }*/
 
 
 
@@ -63,13 +63,16 @@ public class CadeteriaController : ControllerBase
 
 
     [HttpPost("pedido")]//asigna
-    public ActionResult<Pedidos> AgregarPedido([FromQuery] int numeroDePedido,[FromQuery] string observacionPedido,[FromQuery] string nombreCliente,[FromQuery] string dirrrecion, [FromQuery] int telefono, [FromQuery] string datosDeReferenciaDireccion )
+    public ActionResult<Pedidos> AgregarPedido([FromQuery] int numeroDePedido, [FromQuery] string observacionPedido, [FromQuery] string nombreCliente, [FromQuery] string dirrrecion, [FromQuery] int telefono, [FromQuery] string datosDeReferenciaDireccion)
     {
-        Pedidos p = new Pedidos(numeroDePedido,observacionPedido, new(nombreCliente,dirrrecion, telefono,datosDeReferenciaDireccion),true);
-        
+        Pedidos p = new Pedidos(numeroDePedido, observacionPedido, new(nombreCliente, dirrrecion, telefono, datosDeReferenciaDireccion), true);
+
         _cadeteria.AsignarPedidos(p);
-        return Ok(p); 
-   }
+
+        AccesoADatosPedidos acceso = new AccesoADatosPedidos();
+        acceso.Guardar(_cadeteria.Pedidos);
+        return Ok("Se guardo el pedido");
+    }
 
 
 
@@ -80,7 +83,29 @@ public class CadeteriaController : ControllerBase
     [HttpPut("asignar/{idPedido}/{idCadete}")]//actuializa
     public IActionResult AsignarPedido(int idPedido, int idCadete)
     {
+        bool existePedido = _cadeteria.Pedidos.Any(p => p.Nro == idPedido);
+        if (!existePedido)
+        {
+            return NotFound("No existe el pedido con ese ID");
+        }
+
+        bool existeCadete = _cadeteria.Cadetes1.Any(c => c.Id == idCadete);
+        if (!existeCadete)
+        {
+            return NotFound("No existe el cadete con ese ID");
+        }
+
+        Pedidos pedidoSinCadete = _cadeteria.Pedidos.FirstOrDefault(p => p.Nro==idPedido);
+
+        if (pedidoSinCadete.cadete!=null)
+        {
+            return BadRequest("El pedido ya tiene un cadete asignado");
+
+        }
+
         _cadeteria.AsignarCadeteAPedido(idCadete, idPedido);
+        AccesoADatosPedidos acceso = new AccesoADatosPedidos();
+        acceso.Guardar(_cadeteria.Pedidos);
         return NoContent();
     }
 
@@ -89,14 +114,6 @@ public class CadeteriaController : ControllerBase
 
 
 
-    [HttpPut("estado/{idPedido}")]
-    public IActionResult BorrarPedido(int idPedido)
-    {
-
-        _cadeteria.BorrarPedido(idPedido);
-       
-        return NoContent();//para funciones void
-    }
 
 
 
@@ -106,7 +123,44 @@ public class CadeteriaController : ControllerBase
     [HttpPut("cambiarcadete/{idPedido}/{idNuevoCadete}")]
     public IActionResult CambiarCadetePedido(int idPedido, int idNuevoCadete)
     {
+        bool existePedido = _cadeteria.Pedidos.Any(p => p.Nro == idPedido);
+        if (!existePedido)
+        {
+            return NotFound("No existe el pedido con ese ID");
+        }
+
+        bool existeCadete = _cadeteria.Cadetes1.Any(c => c.Id == idNuevoCadete);
+        if (!existeCadete)
+        {
+            return NotFound("No existe el cadete con ese ID");
+        }
+
         _cadeteria.AsignarCadeteAPedido(idNuevoCadete, idPedido);
+        AccesoADatosPedidos acceso = new AccesoADatosPedidos();
+        acceso.Guardar(_cadeteria.Pedidos);
+
         return NoContent();
     }
+    
+
+
+
+
+
+
+    [HttpPut("estado/{idPedido}")]
+    public IActionResult BorrarPedido(int idPedido)
+    {   bool existePedido = _cadeteria.Pedidos.Any(p => p.Nro == idPedido);//any devuelve bool
+        if (existePedido)
+        {
+            var pedidoR = _cadeteria.BorrarPedido(idPedido);
+            _cadeteria.CrearInforme("pedidosR.json", pedidoR);
+
+            return NoContent();//para funciones void
+        }else
+        {
+            return NotFound("No existe ese id");
+        }
+    }
+
 }
