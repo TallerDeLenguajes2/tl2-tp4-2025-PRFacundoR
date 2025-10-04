@@ -55,7 +55,7 @@ public class Cadeteria
 
 
 
-
+//ver si modifico o no
     public void CrearInforme(string NombreArchivo, List<Pedidos> pedidos)
     {
         if (File.Exists(NombreArchivo))

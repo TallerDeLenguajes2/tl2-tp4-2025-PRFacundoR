@@ -7,56 +7,18 @@ namespace cadet.Controllers;
 public class CadeteriaController : ControllerBase
 {
 
-
+//asii se hace cuando no es estatico
     private Cadeteria _cadeteria = new Cadeteria
     {
-        Cadetes1 = new List<Cadetes>(),
-        Pedidos = new List<Pedidos>()
+        Cadetes1 = new AccesoADatosCadetes().Obtener(),
+        Pedidos = new AccesoADatosPedidos().Obtener()
     };
 
 
 
 
 
-    [HttpPost("cadeteria")]
-    public ActionResult<Cadeteria> CrearCadeteria([FromQuery] string path)
-    {
-       
-
-        AccesoADatosCadeteria acceso = new AccesoADatosCadeteria();
-            
-        
-
-        _cadeteria = acceso.LeerCadeteria(path);
-
-        return Ok(_cadeteria);
-
-    }
-
-
-
-
-
-
-
-
-    [HttpPost("cadetes")]
-    public ActionResult<List<Cadetes>> CrearCades([FromQuery] string path)
-    {
-        
-
     
-
-      
-        
-           AccesoADatosCadetes acceso = new AccesoADatosCadetes();
-            
-       
-        _cadeteria.Cadetes1 = acceso.LeerCadetedes(path);
-
-        return Ok(_cadeteria.Cadetes1);
-
-    }
 
 
 
@@ -90,7 +52,7 @@ public class CadeteriaController : ControllerBase
     [HttpGet("informe")]
     public ActionResult GetInforme(List<Pedidos> pedidoR)
     {
-        _cadeteria.CrearInforme("pedidos.json", pedidoR);
+        _cadeteria.CrearInforme("pedidosR.json", pedidoR);
         return Ok("Informe creado");
     }
 
