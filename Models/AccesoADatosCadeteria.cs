@@ -1,7 +1,7 @@
 
 
 using System.Text.Json;
-
+using Models
 public class AccesoADatosCadeteria 
 {
     public Cadeteria Obtener()
